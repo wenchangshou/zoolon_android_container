@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GlobalConfiguration().loadFromAsset("app_settings");
   runApp(MyApp());
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle =
@@ -19,7 +22,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  String url = "http://www.baidu.com";
+  // String url = "http://www.baidu.com";
+  String url = GlobalConfiguration().getValue("startup");
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late WebViewController controllerGlobal;
   TextEditingController _textFieldController = TextEditingController();
   // var _url = 'http://192.168.1.33:6070/control.html';
-  var _url = 'http://www.zoolon.com.com';
+  String _url = GlobalConfiguration().getValue("startup");
   String valueText = '';
 
   void naviate(url) {
@@ -66,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    loadUrl();
+    // loadUrl();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
