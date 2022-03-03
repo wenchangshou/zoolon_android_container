@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() async {
@@ -54,16 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<void> loadUrl() async {
-    final prefs = await SharedPreferences.getInstance();
-    final url = prefs.getString('url') ?? 'http://www.baidu.com';
-    naviate(url);
-  }
-
   Future<void> _setUri(url) async {
+    print('seturl:' + url);
     // obtain shared preferences
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('url', url);
+    // final prefs = await SharedPreferences.getInstance();
+    GlobalConfiguration().updateValue("startup", url);
     naviate(url);
   }
 
@@ -119,16 +114,42 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
         // appBar: new AppBar(title: new Text('Welcome to flutter222')),
         drawer: new Drawer(
-          child: new ListView(
-            children: <Widget>[
-              TextButton(
+          child: new Column(
+            // padding: EdgeInsets.zero,
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              new TextButton(
                   onPressed: () {
-                    // naviate('https://ie.icoa.cn/');
-                    // showAlertDialog(context);
-                    // setUri('http://www.zoolon.com.cn');
                     _displayTextInputDialog(context);
                   },
-                  child: new Text("测试"))
+                  child: new Text('跳转')),
+              SizedBox(
+                  height: 100,
+                  child: ListView(
+                    children: [
+                      ListTile(
+                        title: const Text('百度'),
+                        onTap: () {
+                          // Update the state of the app
+                          // ...
+                          // Then close the drawer
+                          _setUri('http://www.baidu.com');
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('雅虎'),
+                        onTap: () {
+                          // Update the state of the app
+                          // ...
+                          // Then close the drawer
+                          _setUri('http://www.163.com');
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ))
             ],
           ),
         ),
